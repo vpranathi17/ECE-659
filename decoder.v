@@ -1,22 +1,23 @@
-module decoder (sdn,y,clock,PP);
+module decoder (sdn,y,PP);
 input [2:0]sdn;
-input clock;
 input signed [7:0]y;
 output signed [7:0]PP;
 wire [7:0]cout;
-wire cin;
+wire cin,s1,s2;
 wire [7:0]o1,o2,pp1,sum;
-wire s1,s2;
+wire [8:0]p;
 genvar j;
  
 assign s1 = ~ sdn[2];
 assign s2 = ~ sdn[1];
 assign cin = sdn[0];
+assign p[0] = 0;
+assign p[8:1] = y[7:0];
 
 
 for (j=1; j<=8;j=j+1) begin
-assign o1[j-1] = (s1 & sdn[1] & y[j-1]);
-assign o2[j-1] = (s2 & y[j] & sdn[2]);
+assign o1[j-1] = (s1 & sdn[1] & p[j-1]);
+assign o2[j-1] = (s2 & p[j] & sdn[2]);
 assign pp1[j-1] = (o1[j-1] | o2[j-1]);
 assign sum[j-1] = pp1[j-1] ^ sdn[0];
 end
@@ -34,6 +35,7 @@ initial
 #700 $display ("sum:%b,cout: %b", sum,cout);
 
 endmodule
+
 
 
 
