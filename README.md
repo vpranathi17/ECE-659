@@ -8,4 +8,4 @@ Booth decoder is done
 Modified booth multiplier is done
 
 Division Algorithm RTL code:
-
+2's complement is done
