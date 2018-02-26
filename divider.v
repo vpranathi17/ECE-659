@@ -6,6 +6,7 @@ module divider(A,B,Q);
 	wire signed [15:0] Ni, Di;
 	wire [7:0]D,Fi;
 	wire cin,cout;
+	wire xinew;
 // 	wire signed [7:0] xint,xjnew,select,fact;
 
 	assign cin =1'b0;
@@ -14,9 +15,10 @@ module divider(A,B,Q);
 	multiplier m2 (B,xi,Di);
 	complement c1 (Di[7:0],D);
 	cla ca1 (8'b00000010,D,cin,Fi,cout);
-	multiplier m3 (Fi,xi,Q);
+	multiplier m3 (Fi,xi,xinew);
 	
 	assign A = Ni[7:0];
 	assign B = Di[7:0];
+	assign xi = xinew;
 
 endmodule
