@@ -4,7 +4,8 @@ module divider(A,B,Q);
 	wire signed [7:0] xi; 
 	output signed [15:0] Q;
 	wire signed [15:0] Ni, Di;
-	wire [7:0]D,Fi,E,F,G;
+	wire [7:0]D;
+	wire [7:0]Fi,E,F,G;
 	wire cin,cout;
 	wire [15:0]xinew;
 	reg s;
@@ -45,29 +46,38 @@ end
 endfunction
 
 function [15:0]fun;
-input 
+input [15:0]in;
 integer m;
+begin
+for(m=0;m<=15;m=m+1)
+fun[m] = in[m];
+end
 endfunction
 
 	for (i=1; i<=3; i=i+1)
+
+// 	while (i<=3)
 	begin	
 	multiplier m2 (F,xi,Di);
 	assign G = Di[7:0];	
 	multiplier m1 (E,xi,Ni);
 	assign Q = fun(Ni);
 	assign D = out(G);
-// 	complement co (G,Q[7:0]);
+// 	complement co (G,D);
 	cla ca1 (8'b00000010,D,cin,Fi,cout);
 	multiplier m3 (Fi,xi,xinew);
 	initial
-	# 90 $display("%b",Q);
+	# 90 $display("%b",D);
 	
 	assign E = Ni[7:0];
 	assign F = Di[7:0];
 	assign xi = xinew[7:0];
+	
 	end
-// 	
+	
+// 	assign G= D;
 // 	assign Q = Ni ;
 	
 endmodule
+
 
