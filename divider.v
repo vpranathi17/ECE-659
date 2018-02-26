@@ -5,12 +5,14 @@ module divider(A,B,Q);
 	output signed [15:0] Q;
 	wire signed [15:0] Ni, Di;
 	wire [7:0]D,Fi;
-	wire cin,cout;
-	wire xinew;
+	wire cin,cout,xinew;
+	genvar i;
 // 	wire signed [7:0] xint,xjnew,select,fact;
 
 	assign cin =1'b0;
-// for log2n steps	
+
+	for (i=1; i<=3; i=i+1)
+	begin	
 	multiplier m1 (A,xi,Ni);
 	multiplier m2 (B,xi,Di);
 	complement c1 (Di[7:0],D);
@@ -20,5 +22,5 @@ module divider(A,B,Q);
 	assign A = Ni[7:0];
 	assign B = Di[7:0];
 	assign xi = xinew;
-
+	end
 endmodule
