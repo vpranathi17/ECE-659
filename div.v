@@ -27,11 +27,29 @@ Q = o1;
 #90 $finish;
 end
 end
-// divider d2 (e1,f1,inter,o2,i2,x2);
-// always @ (o2,i2)
-// begin
-// Q=o2;
-// end
+assign a1 = e1;
+assign b1 = f1;
+assign x3 = inter;
+divider d2 (a1,b1,x3,o2,i2,x2);
+always @ (o2,i2)
+begin
+$display("%b",i2);
+if (i2[15:8]== 8'b11111111 && i2[7:0] == 8'b00000000) begin
+Q = i2;
+#180 $finish;
+end
+else if (i2[15:8] == 8'b11111111 || i2[7:0] == 8'b00000000) begin
+e2 = o2[7:0];
+f2 = i2[7:0];
+inter1 = x2[7:0];
+Q = x2;
+end
+else
+begin
+Q = o1;
+#90 $finish;
+end
+end
 endmodule
 
 // module div (A,B,Q);
