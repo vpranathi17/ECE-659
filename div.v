@@ -10,7 +10,7 @@ assign xin = 8'b00000001;
 divider d1 (A,B,xin,o1,i1,x1);
 always @ (o1,i1)
 begin
-if (i1[15:8]== 8'b11111111 || i1[7:0] == 8'b00000000) begin
+  if (i1[15:8]== 8'b11111111 && i1[7:0] == 8'b00000000) begin
 Q = o1;
 $finish;
 end
@@ -23,7 +23,7 @@ end
 divider d2 (e1,f1,inter,o2,i2,x2);
 always @ (o2,i2)
 begin
-if (i2[15:8]== 8'b11111111 || i2[7:0] == 8'b00000000) begin
+  if (i2[15:8]== 8'b11111111 && i2[7:0] == 8'b00000000) begin
 Q = o2;
 $finish;
 end
