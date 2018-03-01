@@ -10,28 +10,28 @@ assign xin = 8'b00000001;
 divider d1 (A,B,xin,o1,i1,x1);
 always @ (o1,i1)
 begin
+$display("%b",i1);
 if (i1[15:8]== 8'b11111111 && i1[7:0] == 8'b00000000) begin
 Q = o1;
-$display("%b",i1);
-$finish;
+#90 $finish;
 end
-else if (i1[7:0] == 8'b11111111 || i1[7:0] == 8'b00000000) begin
+else if (i1[15:8] == 8'b11111111 || i1[7:0] == 8'b00000000) begin
 e1 = o1[7:0];
 f1 = i1[7:0];
 inter = x1[7:0];
+Q = o1;
 end
-// else
-//  begin
-// Q = o1;
-// $display("%b",i1);
-// $stop;
-// end
-end
-divider d2 (e1,f1,inter,o2,i2,x2);
-always @ (o2,i2)
+else
 begin
-Q=o2;
+Q = o1;
+#90 $finish;
 end
+end
+// divider d2 (e1,f1,inter,o2,i2,x2);
+// always @ (o2,i2)
+// begin
+// Q=o2;
+// end
 endmodule
 
 // module div (A,B,Q);
