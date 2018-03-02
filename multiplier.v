@@ -1,8 +1,8 @@
 module multiplier(x,y,product);
 
-input signed [7:0]x,y;
-output signed [15:0]product;
-wire signed [7:0]PP1,PP2,PP3,PP4,sum1,sum2,sum3,s1,s2,s3;
+input [7:0]x,y;
+output [15:0]product;
+wire [7:0]PP1,PP2,PP3,PP4,sum1,sum2,sum3,s1,s2,s3;
 wire [2:0]sdn1,sdn2,sdn3,sdn4;
 wire cin,c1,c2,c3;
 
@@ -33,14 +33,17 @@ cla cl2 (s2, PP3, cin, sum2, c2 );
 assign product [5:4] = sum2 [1:0];
 assign s3 = extend(sum2);
 cla cl3 (s3, PP4, cin, sum3, c3 );
-assign product [7:6] = sum3[1:0];
-assign product[8] = product[7];
-assign product[9] = product[7];
-assign product[10] = product[7];
-assign product[11] = product[7];
-assign product[12] = product[7];
-assign product[13] = product[7];
-assign product[14] = product[7];
-assign product[15] = product[7];
+assign product [13:6] = sum3[7:0];
+// assign product[8] = product[7];
+// assign product[9] = product[7];
+// assign product[10] = product[7];
+// assign product[11] = product[7];
+// assign product[12] = product[7];
+// assign product[13] = product[7];
+assign product[14] = product[13];
+assign product[15] = product[13];
+// 
+// initial
+// #90 $display("%b,%b,%b,%b,%b,%b,%b,%b",sdn1,sdn2,sdn3,sdn4,PP1,PP2,PP3,PP4);
 
 endmodule
