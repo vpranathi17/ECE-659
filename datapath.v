@@ -447,10 +447,7 @@ end
 
 endmodule
 
-module rom(
-exponent, // Exponent input
-approx     // Approximate output
-);
+module rom(exponent,approx);
 input [3:0] exponent;
 output reg [3:0] approx;
 
