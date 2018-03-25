@@ -450,37 +450,21 @@ endmodule
 module rom(
 exponent, // Exponent input
 approx     // Approximate output
-//read_en , // Read Enable 
-//ce        // Chip Enable
 );
 input [3:0] exponent;
 output reg [3:0] approx;
-//input read_en;
-//input ce;
 
-// reg [2:0] data ;
-       
-always @ (exponent) //(ce or read_en or address)
+always @ (exponent)
 begin
   case (exponent)
   		4'b0111: approx = 4'b0111;
   		4'b1000: approx = 4'b0110;
   		4'b1001: approx = 4'b0101;
   		4'b1010: approx = 4'b0100;
-//   		4'b1011: approx = 4'b0010;
-//   		4'b1100: approx = 
-//   		4'b1101: approx =
-//   		4'b1110: approx =
-//   		4'b1111: approx =
-  
-//     3'b000 : data = 3'b111; //0.875
-//     3'b001 : data = 3'b111; //0.875
-//     3'b010 : data = 3'b110; //0.75 OR 111=0.875
-//     3'b011 : data = 3'b110; //0.75
-//     3'b100 : data = 3'b101; //0.625
-//     3'b101 : data = 3'b101; //0.625
-//     3'b110 : data = 3'b100; //0.5 OR 101=0.625
-//     3'b111 : data = 3'b100; //0.5
+		4'b0110: approx = 4'b1000;
+		4'b0101: approx = 4'b1001;
+		4'b0100: approx = 4'b1010;
+		default: approx = 4'b0000;
   endcase
 end
 
