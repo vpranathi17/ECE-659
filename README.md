@@ -7,5 +7,8 @@ Booth decoder is done
 8 bit CLA is done
 Modified booth multiplier is done
 
-Division Algorithm RTL code:
-2's complement is done
+Division Algorithm RTL code is done
+
+ROM is designed
+
+Datapath coe is designed
