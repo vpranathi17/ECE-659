@@ -1,0 +1,181 @@
+module multiplier(x,y,product);
+
+input signed [7:0]x,y;
+output signed [15:0]product;
+wire signed [7:0]PP1,PP2,PP3,PP4,sum1,sum2,sum3;
+wire [7:0]s1,s2,s3;
+wire [2:0]sdn1,sdn2,sdn3,sdn4;
+wire cin,c1,c2,c3;
+
+encoder e (x,sdn1,sdn2,sdn3,sdn4);
+decoder d1 (sdn1,y,PP1);
+decoder d2 (sdn2,y,PP2);
+decoder d3 (sdn3,y,PP3);
+decoder d4 (sdn4,y,PP4);
+
+assign cin = 1'b0;
+
+function [7:0]extend;
+input [7:0]PP;
+begin
+extend[7] = PP[7];
+extend[6] = PP[7];
+extend[5:0]= PP[7:2];
+end
+endfunction
+
+assign cin = 1'b0;
+assign product[1:0] = PP1[1:0];
+assign s1 = extend(PP1);
+cla cl1 (s1, PP2, cin, sum1, c1 );
+assign product [3:2] = sum1[1:0];
+assign s2 = extend(sum1);
+cla cl2 (s2, PP3, cin, sum2, c2 );
+assign product [5:4] = sum2 [1:0];
+assign s3 = extend(sum2);
+cla cl3 (s3, PP4, cin, sum3, c3 );
+assign product [7:6] = sum3[1:0];
+assign product[8] = product[7];
+assign product[9] = product[7];
+assign product[10] = product[7];
+assign product[11] = product[7];
+assign product[12] = product[7];
+assign product[13] = product[7];
+assign product[14] = product[7];
+assign product[15] = product[7];
+
+endmodule
+  
+module encoder(x,sdn1,sdn2,sdn3,sdn4);
+
+input signed [7:0]x;
+output signed [2:0]sdn1, sdn2, sdn3, sdn4; //single,double,negate
+
+wire [2:0]xhh,xh,xm,xl;
+
+assign xl[0]=1'b0;
+assign xl[2:1]=x[1:0];
+assign xm[2:0]=x[3:1];
+assign xh[2:0]=x[5:3]; 
+assign xhh[2:0]=x[7:5];
+
+function [2:0]encoding;
+input [2:0]a;
+//reg [2:0]PP;
+reg o1,o2,o3,o4,o5;
+
+begin 
+
+o1 = ~a[0];
+o2 = ~a[1];
+o3 = ~a[2];
+
+encoding[2] = (a[0]^a[1]); //single
+
+o4 = ~(a[0] & a[1] & o3);
+o5 = ~(a[2] & o1 & o2);
+encoding[1] = ~(o4 & o5);//double
+
+encoding[0]=a[2]; //negate
+
+end
+endfunction
+
+assign sdn1[2:0]= encoding(xl[2:0]);
+assign sdn2[2:0]= encoding(xm[2:0]);
+assign sdn3[2:0]= encoding(xh[2:0]);
+assign sdn4[2:0]= encoding(xhh[2:0]);
+
+endmodule
+
+module decoder (sdn,y,PP);
+input [2:0]sdn;
+//input clock;
+input signed [7:0]y;
+output signed [7:0]PP;
+wire [7:0]cout;
+wire cin;
+wire [7:0]o1,o2,pp1,sum;
+wire [8:0]p;
+wire s1,s2;
+genvar j;
+ 
+assign s1 = ~ sdn[2];
+assign s2 = ~ sdn[1];
+assign cin = sdn[0];
+assign p[8:1]=y[7:0];
+
+for (j=1; j<=8;j=j+1) begin
+assign o1[j-1] = (s1 & sdn[1] & p[j-1]);
+assign o2[j-1] = (s2 & p[j] & sdn[2]);
+assign pp1[j-1] = (o1[j-1] | o2[j-1]);
+assign sum[j-1] = pp1[j-1] ^ sdn[0];
+end
+
+half h1 (PP[0],cout[0],sum[0],cin);
+half h2 (PP[1],cout[1],sum[1],cout[0]);
+half h3 (PP[2],cout[2],sum[2],cout[1]);
+half h4 (PP[3],cout[3],sum[3],cout[2]);
+half h5 (PP[4],cout[4],sum[4],cout[3]);
+half h6 (PP[5],cout[5],sum[5],cout[4]);
+half h7 (PP[6],cout[6],sum[6],cout[5]);
+half h8 (PP[7],cout[7],sum[7],cout[6]);
+
+//initial
+//#700 $display ("sum:%b,cout: %b", sum,cout);
+
+endmodule
+
+
+module cla(a,b,cin,sum,cout);
+	input [7:0] a,b;
+	input cin;
+	output [7:0] sum;
+	output cout;
+	wire [7:0] p,g,c;
+	genvar j;
+	//c[0]=cin;
+	for(j=0;j<=7;j=j+1)
+	begin
+	  assign p[j]=(a[j]^b[j]); //propogate stage
+	  assign g[j]=(a[j]&b[j]); //generate stage
+	  if (j==0) 
+	     assign c[j] = cin;
+	      else
+	  assign c[j]=g[j-1]|(p[j-1]&c[j-1]); // internal carry
+	  
+	  assign sum[j]=p[j]^c[j]; //sum generation
+		end	
+		assign cout=c[7];
+endmodule
+
+module half (sum,carry,a,b,);
+	output reg sum,carry;
+	input a;
+	input b;
+	
+	/*always @ (a,b,cin) begin
+		 assign sum= a ^b ^cin;
+		 assign carry =(a&b)|(b&cin)|(cin&a);end*/
+		
+	always @(a,b)
+		begin
+		case ({a,b})
+			2'b00: begin
+			        sum=0;
+			        carry=0; end
+			2'b01: begin
+			        sum=1;
+			        carry=0; end 
+			2'b10: begin
+			        sum=1;
+			        carry=0; end
+			2'b11: begin
+			        sum=0;
+			        carry=1; end 
+		endcase
+		end
+		
+// 		initial
+// 		#200 $display("%b,%b",a,b);
+endmodule
